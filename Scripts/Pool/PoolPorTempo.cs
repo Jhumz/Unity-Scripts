@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectPooling : MonoBehaviour {
+public class PoolPorTempo : MonoBehaviour {
 
 	//Basico para spawn por tempo no local desse script.. Pode ser ajusto de varias formas.
 
 	[SerializeField] int quantidade;
 	[SerializeField] float tempoEntreSpawn;
-	public GameObject[] objetos;
+	public GameObject[] objetos; //Quanto mais obj do mesmo tipo mais chances de spawn.
 	List<GameObject> listObjetos;
 	float tempo;
 	int randon; // Criar objetos randomicos
@@ -18,10 +18,9 @@ public class ObjectPooling : MonoBehaviour {
 		for (int i = 0; i < quantidade; i++)
 		{
 			randon = Random.Range(0, objetos.Length);
-			GameObject spiritInstance = Instantiate(objetos[randon], transform.position, Quaternion.identity);
-			spiritInstance.transform.SetParent(transform);
-			spiritInstance.SetActive(false);
-			listObjetos.Add(spiritInstance);
+			GameObject obj = Instantiate(objetos[randon], transform.position, Quaternion.identity, transform);
+			obj.SetActive(false);
+			listObjetos.Add(obj);
 		}
 	}
 	
@@ -30,20 +29,20 @@ public class ObjectPooling : MonoBehaviour {
 		tempo += Time.deltaTime;
 		if (tempo >= tempoEntreSpawn)
 		{
-			SpawInimigos();
+			Spawn();
 			tempo = 0;
 		}
 	}
 
-	public GameObject SpawInimigos() // Metodo para spawn dos objetos
+	public GameObject Spawn() // Metodo para spawn dos objetos
 	{
-		foreach (GameObject inimigo in listObjetos)
+		foreach (GameObject obj in listObjetos)
 		{
-			if (!inimigo.activeInHierarchy)
+			if (!obj.activeInHierarchy)
 			{
-				inimigo.transform.position = transform.position;
-				inimigo.SetActive(true);
-				return inimigo;
+				obj.transform.position = transform.position;
+				obj.SetActive(true);
+				return obj;
 			}
 		}
 		return null;
